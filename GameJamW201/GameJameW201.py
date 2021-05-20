@@ -1,9 +1,12 @@
 # Created by fame
 # MAE + FA
-# Weekly Game Jam
+# Weekly Game Jam 201
 #
-# Github
-#
+# Github Mainpage
+# https://github.com/Scabber/GameJam
+# GitHub Projectpage
+# https://github.com/Scabber/GameJam/tree/main/GameJamW201
+
 
 import tkinter as tk
 import random
@@ -28,7 +31,7 @@ right_selection = None
 left_circle = []
 right_circle = []
 
-# Window
+# Window Ini
 top = tk.Tk()
 top.title("Bad Connection")
 top.resizable(width=False, height=False)
@@ -36,20 +39,19 @@ top.geometry(str(WIDTH) + 'x' + str(HEIGHT))
 top.iconphoto(False, tk.PhotoImage(file='badco.png'))
 
 surface = tk.Canvas(top, bg="grey", height=HEIGHT, width=WIDTH)
-
 text = surface.create_text(WIDTH / 2, 50, text="Game Jam 201 Bad Connection", font=('Helvetica', '20', 'bold'))
 timer = surface.create_text(HEIGHT / 2, WIDTH / 2, text="Timer goes here", font=('Helvetica', '16'))
-left_selection_shower = surface.create_text(100, HEIGHT - 20, text="Left Selection goes here", font=('Helvetica', '10'))
-right_selection_shower = surface.create_text(WIDTH - 100, HEIGHT - 20, text="Right Selection goes here",
-                                             font=('Helvetica', '10'))
+# left_selection_shower = surface.create_text(100, HEIGHT - 20, text="Left Selection goes here", font=('Helvetica',
+# '10')) right_selection_shower = surface.create_text(WIDTH - 100, HEIGHT - 20, text="Right Selection goes here",
+# font=('Helvetica', '10'))
 
 
+# Tick down timer
 def tick():
     global time
     time -= 1
-
     surface.itemconfigure(timer, text=time)
-    # print(time)
+
     if time == 0:
         messagebox.showerror("oooohhhh", "Time over : You loose the game")
         top.quit()
@@ -59,31 +61,38 @@ def tick():
 
 def key(event):
 
+    # check if char is on the list of valid chars
     for x in range(0, 5):
         if event.char == left_options[x]:
             global left_selection
+            # find the color selected from the list of saved colors
             left_selection = left_color_list[x]
-            surface.itemconfigure(left_selection_shower, text=left_options[x])
+            #surface.itemconfigure(left_selection_shower, text=left_options[x])
 
+    # check if number is on list of valid numers
     for r in range(0, 5):
         if event.char == right_options[r]:
             global right_selection
             right_selection = right_color_list[r]
-            surface.itemconfigure(right_selection_shower, text=right_options[r])
+            #surface.itemconfigure(right_selection_shower, text=right_options[r])
 
+    # has to be done if user enters invalid input as first input
     if left_selection is not None and right_selection is not None:
 
         if left_selection == right_selection:
 
+            # what canvas element is a circle and the matching color?
             correct_circles = list(set(surface.find_withtag("circle")) & set(surface.find_withtag(left_selection)))
 
+            # go through all correct_circles and draw a highlight over all of them
             for correct in correct_circles:
-                create_highlight_circle(find_center(correct), left_selection)
+                create_highlight_circle(find_center(correct))
                 #surface.create_line(100, 100 * index, WIDTH - 100, 100 * i, width=5, fill=left_selection)
 
             if left_selection in colors:
                 colors.remove(left_selection)
 
+                # if no colors are left to remove in the list the game is over
                 if not colors:
                     messagebox.showinfo("YEAH", "You won the game")
                     top.quit()
@@ -110,15 +119,6 @@ def get_right_random_color():
     return picked_color
 
 
-def click_object(event):
-    print('Got object click', event.x, event.y, event.widget)
-    print(event.widget.find_closest(event.x, event.y))
-
-
-def clicked_on_draw_surface(event):
-    print("clicked at", event.x, event.y)
-
-
 def find_center(id):
     pos = surface.coords(id)
     yrel = (pos[2]-pos[0])/2
@@ -130,7 +130,7 @@ def find_center(id):
     return xabs, yabs
 
 
-def create_highlight_circle(pos, color):
+def create_highlight_circle(pos):
     x = pos[0]
     y = pos[1]
 
@@ -139,6 +139,7 @@ def create_highlight_circle(pos, color):
     x1 = x + MarkerRadius
     y1 = y + MarkerRadius
 
+    # a circle is just a special oval
     surface.create_oval(x0, y0, x1, y1, outline="black", width=MarkerRadius)
 
 
@@ -166,8 +167,6 @@ for i in range(1, 6):
 
 colors = ['blue', 'green', 'red', 'yellow', 'white']
 
-surface.tag_bind(text, '<Button-1>', click_object)
-surface.bind("<Button-1>", clicked_on_draw_surface)
 top.bind("<Key>", key)
 
 surface.pack()
