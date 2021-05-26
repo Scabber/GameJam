@@ -8,7 +8,7 @@ import tkinter as tk
 
 # Constants
 HEIGHT = 300
-WIDTH = 550
+WIDTH = 700
 Title = "Welcome to Clones W202"
 
 # Make Windows 10 High DPI Aware
